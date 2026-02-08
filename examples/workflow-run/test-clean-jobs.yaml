@@ -1,0 +1,72 @@
+apiVersion: core.oam.dev/v1alpha1
+kind: WorkflowRun
+metadata:
+  name: test-clean-jobs
+  namespace: default
+spec:
+  workflowSpec:
+    steps:
+      # Create a job first
+      - name: create-test-job
+        type: apply-object
+        properties:
+          value:
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+              name: test-job-1
+              namespace: default
+              labels:
+                app: test-app
+                workflow.oam.dev/name: test-clean-jobs
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: busybox
+                    image: busybox:latest
+                    command:
+                    - "sh"
+                    - "-c"
+                    - "echo 'Job running...' && sleep 10 && echo 'Job complete'"
+                  restartPolicy: Never
+
+      # Create another job
+      - name: create-another-job
+        type: apply-object
+        properties:
+          value:
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+              name: test-job-2
+              namespace: default
+              labels:
+                app: test-app
+                workflow.oam.dev/name: test-clean-jobs
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: busybox
+                    image: busybox:latest
+                    command:
+                    - "sh"
+                    - "-c"
+                    - "echo 'Another job running...'"
+                  restartPolicy: Never
+
+      # Wait for jobs to complete
+      - name: wait
+        type: suspend
+        properties:
+          duration: "15s"
+
+      # Clean all jobs with matching labels
+      - name: cleanup-jobs
+        type: clean-jobs
+        properties:
+          namespace: default
+          labelselector:
+            app: test-app
+

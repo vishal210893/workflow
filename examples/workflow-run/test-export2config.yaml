@@ -1,0 +1,28 @@
+apiVersion: core.oam.dev/v1alpha1
+kind: WorkflowRun
+metadata:
+  name: test-export2config
+  namespace: default
+spec:
+  workflowSpec:
+    steps:
+      - name: export-app-config
+        type: export2config
+        properties:
+          configName: app-config
+          data:
+            app-name: "my-application"
+            app-version: "v1.0.0"
+            environment: "production"
+            database-url: "postgres://db.example.com:5432/myapp"
+
+      - name: export-settings
+        type: export2config
+        properties:
+          configName: app-settings
+          namespace: default
+          data:
+            log-level: "info"
+            max-connections: "100"
+            timeout: "30s"
+

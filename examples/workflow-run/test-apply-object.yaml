@@ -1,0 +1,33 @@
+apiVersion: core.oam.dev/v1alpha1
+kind: WorkflowRun
+metadata:
+  name: test-apply-object
+  namespace: default
+spec:
+  workflowSpec:
+    steps:
+      - name: apply-deployment-manually
+        type: apply-object
+        properties:
+          value:
+            apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: nginx-test
+              namespace: default
+            spec:
+              replicas: 1
+              selector:
+                matchLabels:
+                  app: nginx-test
+              template:
+                metadata:
+                  labels:
+                    app: nginx-test
+                spec:
+                  containers:
+                  - name: nginx
+                    image: nginx:latest
+                    ports:
+                    - containerPort: 80
+
