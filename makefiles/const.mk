@@ -74,5 +74,8 @@ RUNTIME_CLUSTER_NAME ?= worker
 KUBEVELA_VERSION ?= master
 KUBEVELA_RAW_URL = https://raw.githubusercontent.com/kubevela/kubevela/$(KUBEVELA_VERSION)/charts/vela-core/crds
 
+# Namespace for definitions when running locally
+DEFINITION_NAMESPACE ?= vela-system
+
 COMMON_CRD_FILES = \
   core.oam.dev_workflows.yaml
